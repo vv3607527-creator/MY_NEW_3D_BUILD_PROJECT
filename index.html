@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VELMORAINE VILLA · A Scroll-World Estate</title>
+  <meta name="description" content="A cinematic scroll-world tour of Velmoraine Villa, a sculptural hillside estate above Los Angeles. Arrive by air. Stay for the horizon." />
+  <meta property="og:title" content="VELMORAINE VILLA · A Scroll-World Estate" />
+  <meta property="og:description" content="A cinematic scroll-world tour of a sculptural hillside estate above Los Angeles." />
+  <meta property="og:image" content="/assets/img/poster-hero.jpg" />
+  <link rel="icon" type="image/png" href="/assets/img/favicon.png" />
+  <link rel="apple-touch-icon" href="/assets/img/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+
+  <!-- ═══════════════ LOADER ═══════════════ -->
+  <div class="loader" id="loader" aria-hidden="true">
+    <div class="loader__mark">VELMORAINE <em>VILLA</em></div>
+    <div class="loader__bar"><span id="loaderBar"></span></div>
+    <div class="loader__pct" id="loaderPct">00</div>
+  </div>
+
+  <!-- ═══════════════ FIXED STAGE (scroll-world visuals) ═══════════════ -->
+  <div class="stage" id="stage" aria-live="polite">
+
+    <!-- 00 · Arrival: aerial image + scroll-scrubbed drone frame sequence -->
+    <section class="plate is-live" data-plate="0">
+      <div class="plate__media" data-media>
+        <img class="hero-fallback" src="/assets/img/aerial-day.jpg" alt="Aerial view of Velmoraine Villa" />
+        <canvas id="heroCanvas" width="1536" height="864" aria-hidden="true"></canvas>
+      </div>
+      <div class="plate__shade"></div>
+    </section>
+
+    <!-- 01 · The Approach -->
+    <section class="plate" data-plate="1">
+      <div class="plate__media" data-media><img src="/assets/img/aerial-day.jpg" alt="Aerial view of Velmoraine Villa, its lagoon and motor court" /></div>
+      <div class="plate__shade"></div>
+    </section>
+
+    <!-- 02 · The Great Room -->
+    <section class="plate" data-plate="2">
+      <div class="plate__media" data-media><img src="/assets/img/great-room-grand.jpg" alt="Double-height great room with cascading chandelier" /></div>
+      <div class="plate__shade"></div>
+    </section>
+
+    <!-- 03 · The Chef's Kitchen -->
+    <section class="plate" data-plate="3">
+      <div class="plate__media" data-media><img src="/assets/img/kitchen.jpg" alt="Chef's kitchen with black marble monolith island and skyline view" /></div>
+      <div class="plate__shade"></div>
+    </section>
+
+    <!-- 04 · The Wine Cellar -->
+    <section class="plate" data-plate="4">
+      <div class="plate__media" data-media><img src="/assets/img/wine-cellar.jpg" alt="Curved glass wine cellar with backlit bottles" /></div>
+      <div class="plate__shade"></div>
+    </section>
+
+    <!-- 05 · The Dining Room -->
+    <section class="plate" data-plate="5">
+      <div class="plate__media" data-media><img src="/assets/img/dining.jpg" alt="Dining room set for twelve beside the wine wall" /></div>
+      <div class="plate__shade"></div>
+    </section>
+
+    <!-- 06 · The Terrace -->
+    <section class="plate" data-plate="6">
+      <div class="plate__media" data-media><img src="/assets/img/terrace-night.jpg" alt="Night terrace lounge around the infinity pool" /></div>
+      <div class="plate__shade"></div>
+    </section>
+
+    <!-- 07 · The Pool Deck -->
+    <section class="plate" data-plate="7">
+      <div class="plate__media" data-media><img src="/assets/img/pool-deck.jpg" alt="Infinity pool deck with palms and downtown skyline at sunset" /></div>
+      <div class="plate__shade"></div>
+    </section>
+
+    <!-- 08 · The Spa Bath -->
+    <section class="plate" data-plate="8">
+      <div class="plate__media" data-media><img src="/assets/img/spa-bath.jpg" alt="Travertine spa tub before a curved glass wall at dusk" /></div>
+      <div class="plate__shade"></div>
+    </section>
+
+    <!-- 09 · The Master Suite -->
+    <section class="plate" data-plate="9">
+      <div class="plate__media" data-media><img src="/assets/img/suite-night.jpg" alt="Circular master suite under an oculus at night" /></div>
+      <div class="plate__shade"></div>
+    </section>
+
+    <!-- 10 · Finale: dusk aerial -->
+    <section class="plate" data-plate="10">
+      <div class="plate__media" data-media><img src="/assets/img/aerial-dusk.jpg" alt="Dusk aerial of Velmoraine Villa and lagoon" /></div>
+      <div class="plate__shade"></div>
+    </section>
+
+    <!-- 11 · Contact -->
+    <section class="plate" data-plate="11">
+      <div class="plate__media" data-media><img src="/assets/img/film-grade.jpg" alt="Evening estate glowing above the pool" /></div>
+      <div class="plate__shade plate__shade--deep"></div>
+      <!-- animated brand marquee: bottom of contact chapter -->
+      <div class="brand-marquee" aria-hidden="true">
+        <div class="brand-marquee__track">
+          <span>VELMORAINE <em>VILLA</em>&nbsp;✦&nbsp;VELMORAINE <em>VILLA</em>&nbsp;✦&nbsp;VELMORAINE <em>VILLA</em>&nbsp;✦&nbsp;VELMORAINE <em>VILLA</em>&nbsp;✦&nbsp;</span>
+          <span>VELMORAINE <em>VILLA</em>&nbsp;✦&nbsp;VELMORAINE <em>VILLA</em>&nbsp;✦&nbsp;VELMORAINE <em>VILLA</em>&nbsp;✦&nbsp;VELMORAINE <em>VILLA</em>&nbsp;✦&nbsp;</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ CHAPTER COPY ═══════════ -->
+
+    <div class="copy is-live" data-copy="0">
+      <p class="copy__index"><i></i>01 / 12</p>
+      <p class="copy__kicker">Hollywood Hills · Los Angeles</p>
+      <h1 class="copy__title">Velmoraine<br /><em>Villa</em></h1>
+      <p class="copy__body">A sculptural estate suspended between the hills and the horizon. Scroll, and the drone will take you in.</p>
+      <div class="copy__chips"><span>10,800 sq ft</span><span>Private helipad</span><span>Infinity lagoon</span></div>
+    </div>
+
+    <div class="copy copy--right" data-copy="1">
+      <p class="copy__index"><i></i>02 / 12</p>
+      <p class="copy__kicker">The Approach</p>
+      <h2 class="copy__title">Carved into <em>the hills.</em></h2>
+      <p class="copy__body">Two curved travertine wings unfold around a black lagoon. Supercars dock below; the helicopter waits above.</p>
+      <div class="copy__chips"><span>Motor court ×6</span><span>Lagoon docks</span><span>Rooftop pad</span></div>
+    </div>
+
+    <div class="copy" data-copy="2">
+      <p class="copy__index"><i></i>03 / 12</p>
+      <p class="copy__kicker">The Great Room</p>
+      <h2 class="copy__title">Light, <em>suspended.</em></h2>
+      <p class="copy__body">A cascading chandelier of hand-blown amber glass falls through a double-height salon of black marble and walnut.</p>
+      <div class="copy__chips"><span>Double-height glass</span><span>Grand piano</span><span>Spiral stair</span></div>
+    </div>
+
+    <div class="copy copy--right" data-copy="3">
+      <p class="copy__index"><i></i>04 / 12</p>
+      <p class="copy__kicker">The Chef's Kitchen</p>
+      <h2 class="copy__title">Flame meets <em>the skyline.</em></h2>
+      <p class="copy__body">A monolith of black marble anchors the room: copper steaming on the range while the whole city glitters beyond the glass.</p>
+      <div class="copy__chips"><span>Marble monolith</span><span>Brass fixtures</span><span>Blue-flame range</span></div>
+    </div>
+
+    <div class="copy" data-copy="4">
+      <p class="copy__index"><i></i>05 / 12</p>
+      <p class="copy__kicker">The Wine Cellar</p>
+      <h2 class="copy__title">A library <em>of vintages.</em></h2>
+      <p class="copy__body">Curved glass walls of backlit bottles glow like jewelry; a brass ladder rides the collection from floor to ceiling.</p>
+      <div class="copy__chips"><span>Backlit cellar</span><span>Brass ladder</span><span>Tasting counter</span></div>
+    </div>
+
+    <div class="copy copy--right" data-copy="5">
+      <p class="copy__index"><i></i>06 / 12</p>
+      <p class="copy__kicker">The Dining Room</p>
+      <h2 class="copy__title">Set <em>for twelve.</em></h2>
+      <p class="copy__body">One slab of black marble, a cellar of backlit vintages, and the whole city glittering beyond your guests.</p>
+      <div class="copy__chips"><span>Marble table ×14</span><span>Glass cellar</span><span>Chef's pass</span></div>
+    </div>
+
+    <div class="copy" data-copy="6">
+      <p class="copy__index"><i></i>07 / 12</p>
+      <p class="copy__kicker">The Terrace</p>
+      <h2 class="copy__title">Nights <em>run deep.</em></h2>
+      <p class="copy__body">Conversation pits float on a sheet of water: warmed by fire, cooled by the pool beyond the glass.</p>
+      <div class="copy__chips"><span>Sunken lounge</span><span>Reflecting moat</span><span>Wellness bar</span></div>
+    </div>
+
+    <div class="copy copy--right" data-copy="7">
+      <p class="copy__index"><i></i>08 / 12</p>
+      <p class="copy__kicker">The Pool Deck</p>
+      <h2 class="copy__title">Palms meet <em>the horizon.</em></h2>
+      <p class="copy__body">Torches line a mirror-still infinity edge. The fire-pit lounge floats on water, framed by two silhouetted palms.</p>
+      <div class="copy__chips"><span>Infinity edge</span><span>Fire-pit lounge</span><span>Torch-lit deck</span></div>
+    </div>
+
+    <div class="copy" data-copy="8">
+      <p class="copy__index"><i></i>09 / 12</p>
+      <p class="copy__kicker">The Spa Bath</p>
+      <h2 class="copy__title">Steam over <em>the city.</em></h2>
+      <p class="copy__body">A travertine monolith tub, candles on black marble, and rain falling somewhere above the skyline.</p>
+      <div class="copy__chips"><span>Travertine tub</span><span>Rain shower</span><span>Candlelight ledge</span></div>
+    </div>
+
+    <div class="copy copy--right" data-copy="9">
+      <p class="copy__index"><i></i>10 / 12</p>
+      <p class="copy__kicker">The Master Suite</p>
+      <h2 class="copy__title">Sleeps with <em>the city.</em></h2>
+      <p class="copy__body">A circular sanctum beneath an oculus of sky: olive trees, black slate, and ten thousand lights below.</p>
+      <div class="copy__chips"><span>Oculus sky ring</span><span>Dual fire</span><span>Terrace bath</span></div>
+    </div>
+
+    <div class="copy" data-copy="10">
+      <p class="copy__index"><i></i>11 / 12</p>
+      <p class="copy__kicker">Dusk</p>
+      <h2 class="copy__title">The view is <em>the address.</em></h2>
+      <p class="copy__body">Every wing, every light, every reflection composed for a single thing: the horizon.</p>
+      <div class="copy__actions">
+        <a class="btn-gold" href="#" id="ctaFinal">Request a Private Viewing</a>
+        <a class="btn-ghost" href="#">Download the Brochure</a>
+      </div>
+    </div>
+
+    <div class="copy copy--right copy--contact" data-copy="11">
+      <p class="copy__index"><i></i>12 / 12</p>
+      <p class="copy__kicker">Connect · Velmoraine</p>
+      <h2 class="copy__title">Let's build <em>your world.</em></h2>
+      <p class="copy__body">Scroll-world experiences, cinematic 3D and web, crafted by Venky Venkatesh. Call me, or find me anywhere:</p>
+      <a class="contact-phone" href="tel:+918639865789">+91&nbsp;86398&nbsp;65789</a>
+      <div class="contact-links">
+        <a href="https://github.com/vv3607527-creator" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.instagram.com/mrvenky60" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://x.com/VENKY5789" target="_blank" rel="noopener">X&nbsp;/&nbsp;Twitter</a>
+        <a href="https://www.linkedin.com/in/venky-venkatesh-726172415" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://in.pinterest.com/venkyvenkatesh865789" target="_blank" rel="noopener">Pinterest</a>
+        <a href="https://3d-portfolio-dun-three-69.vercel.app" target="_blank" rel="noopener">Portfolio&nbsp;↗</a>
+      </div>
+    </div>
+
+    <!-- scroll cue -->
+    <div class="cue" id="cue"><span>Scroll to enter</span><i></i></div>
+  </div>
+
+  <!-- ═══════════════ CHROME ═══════════════ -->
+  <header class="topbar" id="topbar">
+    <a class="brand" href="#top">
+      <img class="brand__mark" src="/assets/img/favicon.png" alt="" width="30" height="30" />
+      <span>VELMORAINE<br /><em>VILLA</em></span>
+    </a>
+    <nav class="pills" id="pills" aria-label="Chapters">
+      <button class="pill is-active" data-goto="0">Arrival</button>
+      <button class="pill" data-goto="1">Approach</button>
+      <button class="pill" data-goto="2">Great Room</button>
+      <button class="pill" data-goto="3">Kitchen</button>
+      <button class="pill" data-goto="4">Cellar</button>
+      <button class="pill" data-goto="5">Dining</button>
+      <button class="pill" data-goto="6">Terrace</button>
+      <button class="pill" data-goto="7">Pool Deck</button>
+      <button class="pill" data-goto="8">Spa</button>
+      <button class="pill" data-goto="9">Suite</button>
+      <button class="pill" data-goto="10">Finale</button>
+      <button class="pill" data-goto="11">Contact</button>
+    </nav>
+    <button class="cta" id="ctaTop">Request a Viewing</button>
+  </header>
+
+  <aside class="dots" id="dots" aria-label="Chapter progress">
+    <button data-goto="0" class="is-active"><span>Arrival</span><i></i></button>
+    <button data-goto="1"><span>The Approach</span><i></i></button>
+    <button data-goto="2"><span>Great Room</span><i></i></button>
+    <button data-goto="3"><span>Chef's Kitchen</span><i></i></button>
+    <button data-goto="4"><span>Wine Cellar</span><i></i></button>
+    <button data-goto="5"><span>Dining Room</span><i></i></button>
+    <button data-goto="6"><span>Terrace</span><i></i></button>
+    <button data-goto="7"><span>Pool Deck</span><i></i></button>
+    <button data-goto="8"><span>Spa Bath</span><i></i></button>
+    <button data-goto="9"><span>Master Suite</span><i></i></button>
+    <button data-goto="10"><span>Finale</span><i></i></button>
+    <button data-goto="11"><span>Contact</span><i></i></button>
+  </aside>
+
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- scroll length provider -->
+  <div class="scroll-world" id="scrollWorld"></div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

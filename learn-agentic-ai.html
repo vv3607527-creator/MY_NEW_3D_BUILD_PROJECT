@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Agentic AI — A Field Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0a0b0e;
+    --bg-raised: #101218;
+    --bg-card: #12141b;
+    --line: rgba(255,255,255,0.08);
+    --line-strong: rgba(255,255,255,0.14);
+    --text: #eceef2;
+    --text-dim: #9aa1ad;
+    --text-faint: #5d6472;
+    --accent: #34d399;
+    --accent-deep: #059669;
+    --accent-glow: rgba(52,211,153,0.12);
+    --font-display: "Space Grotesk", sans-serif;
+    --font-mono: "JetBrains Mono", monospace;
+    --ease-out: cubic-bezier(0.32, 0.72, 0, 1);
+    --radius-xl: 28px;
+    --radius-lg: calc(28px - 8px);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-display);
+    font-weight: 300;
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection { background: var(--accent-deep); color: #fff; }
+
+  /* ---------- Ambient background ---------- */
+  .ambient {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 60% 40% at 75% -10%, rgba(52,211,153,0.07), transparent 60%),
+      radial-gradient(ellipse 50% 35% at 10% 110%, rgba(16,185,129,0.05), transparent 60%);
+  }
+
+  .grain {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  main { position: relative; z-index: 1; }
+
+  /* ---------- Nav ---------- */
+  nav {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: rgba(14,15,20,0.72);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    transition: transform 0.6s var(--ease-out), opacity 0.4s ease;
+  }
+  nav.hidden-up { transform: translate(-50%, -120px); opacity: 0; }
+  nav .brand {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    padding: 8px 14px 8px 10px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    white-space: nowrap;
+  }
+  nav .brand-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 10px rgba(52,211,153,0.7);
+  }
+  nav a.navlink {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 400;
+    padding: 8px 14px;
+    border-radius: 999px;
+    white-space: nowrap;
+    transition: color 0.25s ease, background 0.25s ease;
+  }
+  nav a.navlink:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+  @media (max-width: 900px) { nav a.navlink { display: none; } }
+
+  /* ---------- Layout primitives ---------- */
+  .wrap { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+  section { padding: clamp(96px, 12vw, 160px) 0; position: relative; }
+
+  h1, h2, h3 { font-weight: 500; letter-spacing: -0.03em; line-height: 1.05; }
+
+  .kicker {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  p.lede {
+    color: var(--text-dim);
+    max-width: 62ch;
+    font-size: clamp(15px, 1.6vw, 17px);
+    font-weight: 300;
+  }
+
+  /* ---------- Scroll reveal ---------- */
+  .reveal {
+    opacity: 0;
+    transform: translateY(36px);
+    filter: blur(6px);
+    transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out), filter 0.9s var(--ease-out);
+  }
+  .reveal.in { opacity: 1; transform: translateY(0); filter: blur(0); }
+  .d1 { transition-delay: 80ms; } .d2 { transition-delay: 160ms; }
+  .d3 { transition-delay: 240ms; } .d4 { transition-delay: 320ms; }
+  .d5 { transition-delay: 400ms; } .d6 { transition-delay: 480ms; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .reveal { opacity: 1 !important; transform: none !important; filter: none !important; transition: none !important; }
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  }
+
+  /* ================= HERO ================= */
+  .hero { min-height: 100dvh; display: flex; align-items: center; padding-top: 120px; }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(40px, 6vw, 88px);
+    align-items: center;
+    width: 100%;
+  }
+  .hero h1 {
+    font-size: clamp(44px, 7vw, 84px);
+    letter-spacing: -0.04em;
+    margin: 22px 0 26px;
+  }
+  .hero h1 em {
+    font-style: normal;
+    color: var(--accent);
+    position: relative;
+    white-space: nowrap;
+  }
+  .hero h1 em svg {
+    position: absolute;
+    left: 0; bottom: -6px;
+    width: 100%; height: 12px;
+    opacity: 0.55;
+  }
+  .hero p.sub { margin-bottom: 40px; max-width: 46ch; }
+  .cta-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 8px 8px 26px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    background: var(--accent);
+    color: #07271b;
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    transition: transform 0.45s var(--ease-out), box-shadow 0.45s var(--ease-out), background 0.3s ease;
+    box-shadow: 0 8px 32px -8px rgba(52,211,153,0.35);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 44px -8px rgba(52,211,153,0.5); }
+  .btn-primary:active { transform: translateY(0) scale(0.98); }
+  .btn-primary .orb {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: rgba(7,39,27,0.14);
+    display: grid;
+    place-items: center;
+    transition: transform 0.45s var(--ease-out);
+  }
+  .btn-primary:hover .orb { transform: translateX(2px) rotate(45deg); }
+  .btn-primary:focus-visible, a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 24px;
+    border-radius: 999px;
+    border: 1px solid var(--line-strong);
+    background: rgba(255,255,255,0.02);
+    color: var(--text);
+    font-size: 14.5px;
+    font-weight: 400;
+    text-decoration: none;
+    transition: border-color 0.3s ease, background 0.3s ease, transform 0.45s var(--ease-out);
+  }
+  .btn-ghost:hover { border-color: rgba(255,255,255,0.28); background: rgba(255,255,255,0.05); }
+  .btn-ghost:active { transform: scale(0.98); }
+
+  /* Hero terminal panel — double bezel */
+  .terminal-shell {
+    padding: 10px;
+    border-radius: var(--radius-xl);
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--line);
+    box-shadow: 0 30px 80px -30px rgba(0,0,0,0.8);
+  }
+  .terminal {
+    border-radius: var(--radius-lg);
+    background: linear-gradient(180deg, #0d0f14, #0a0c10);
+    border: 1px solid var(--line);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+    overflow: hidden;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    line-height: 2;
+  }
+  .term-bar {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(255,255,255,0.02);
+  }
+  .term-bar span.dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.12); }
+  .term-bar .ttl { margin-left: auto; font-size: 11px; color: var(--text-faint); letter-spacing: 0.08em; }
+  .term-body { padding: 22px 22px 26px; }
+  .term-body .ln { opacity: 0; animation: termIn 0.5s ease forwards; }
+  @media (prefers-reduced-motion: reduce) { .term-body .ln { opacity: 1; animation: none; } }
+  .term-body .ln:nth-child(1) { animation-delay: 0.3s; }
+  .term-body .ln:nth-child(2) { animation-delay: 0.7s; }
+  .term-body .ln:nth-child(3) { animation-delay: 1.1s; }
+  .term-body .ln:nth-child(4) { animation-delay: 1.5s; }
+  .term-body .ln:nth-child(5) { animation-delay: 1.9s; }
+  @keyframes termIn { from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: none; } }
+  .t-prompt { color: var(--accent); }
+  .t-dim { color: var(--text-faint); }
+  .t-key { color: #7dd3fc; }
+  .t-str { color: #fbbf24; }
+  .cursor-blink {
+    display: inline-block;
+    width: 8px; height: 15px;
+    vertical-align: -2px;
+    background: var(--accent);
+    animation: blink 1.1s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .hero-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 14px;
+    padding: 0 8px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    color: var(--text-faint);
+  }
+
+  /* ================= SECTION HEADERS ================= */
+  .sec-head { margin-bottom: clamp(48px, 6vw, 72px); }
+  .sec-head h2 {
+    font-size: clamp(32px, 4.4vw, 52px);
+    margin-top: 18px;
+    max-width: 18ch;
+  }
+  .sec-head p.lede { margin-top: 18px; }
+
+  /* ================= LOOP SECTION ================= */
+  .loop-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    counter-reset: step;
+  }
+  .loop-step {
+    --pad: 10px;
+    padding: var(--pad);
+    border-radius: 22px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--line);
+    transition: transform 0.5s var(--ease-out), border-color 0.3s ease, background 0.3s ease;
+  }
+  .loop-step:hover { transform: translateY(-4px); border-color: var(--line-strong); background: rgba(255,255,255,0.045); }
+  .loop-inner {
+    height: 100%;
+    border-radius: calc(22px - 8px);
+    border: 1px solid var(--line);
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    padding: 26px 22px 24px;
+    position: relative;
+  }
+  .loop-step .num {
+    counter-increment: step;
+    display: inline-grid;
+    place-items: center;
+    width: 30px; height: 30px;
+    border-radius: 9px;
+    border: 1px solid rgba(52,211,153,0.35);
+    background: var(--accent-glow);
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    margin-bottom: 18px;
+  }
+  .loop-step .num::before { content: "0" counter(step); }
+  .loop-step h3 { font-size: 19px; margin-bottom: 8px; }
+  .loop-step p { font-size: 13.5px; color: var(--text-dim); line-height: 1.65; }
+
+  /* ================= BENTO — building blocks ================= */
+  .bento {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 14px;
+    grid-auto-rows: minmax(150px, auto);
+  }
+  .cell {
+    padding: 10px;
+    border-radius: 24px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--line);
+    transition: border-color 0.3s ease, transform 0.5s var(--ease-out);
+    position: relative;
+    overflow: hidden;
+  }
+  .cell:hover { border-color: var(--line-strong); transform: translateY(-3px); }
+  .cell-in {
+    height: 100%;
+    border-radius: 16px;
+    border: 1px solid var(--line);
+    background: linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+    padding: 26px 24px;
+    display: flex;
+    flex-direction: column;
+  }
+  .cell h3 { font-size: 20px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; }
+  .cell p { font-size: 13.5px; color: var(--text-dim); }
+  .glyph {
+    flex-shrink: 0;
+    width: 34px; height: 34px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    background: var(--accent-glow);
+    border: 1px solid rgba(52,211,153,0.3);
+    color: var(--accent);
+  }
+  .c-wide { grid-column: span 7; }
+  .c-tall { grid-column: span 5; grid-row: span 2; }
+  .c-third { grid-column: span 4; }
+  .cell.tinted .cell-in {
+    background:
+      radial-gradient(ellipse 120% 100% at 100% 0%, rgba(52,211,153,0.13), transparent 55%),
+      linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+  }
+  @media (max-width: 860px) {
+    .c-wide, .c-tall, .c-third { grid-column: span 12; grid-row: auto; }
+  }
+
+  .mini-diagram {
+    margin-top: auto;
+    padding-top: 22px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-faint);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .mini-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .chip {
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,0.03);
+    white-space: nowrap;
+  }
+  .chip.on { border-color: rgba(52,211,153,0.4); color: var(--accent); background: var(--accent-glow); }
+
+  /* ================= PATTERNS (numbered list rows) ================= */
+  .pattern-list { border-top: 1px solid var(--line); }
+  .pattern {
+    display: grid;
+    grid-template-columns: 90px minmax(0,4fr) minmax(0,6fr) 60px;
+    gap: 24px;
+    align-items: baseline;
+    padding: 30px 8px;
+    border-bottom: 1px solid var(--line);
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.3s ease;
+    position: relative;
+  }
+  .pattern:hover { background: rgba(255,255,255,0.02); }
+  .pattern .idx {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-faint);
+  }
+  .pattern h3 { font-size: clamp(19px, 2.2vw, 24px); font-weight: 500; transition: color 0.3s ease; }
+  .pattern:hover h3 { color: var(--accent); }
+  .pattern p { font-size: 14px; color: var(--text-dim); }
+  .pattern .arrow {
+    justify-self: end;
+    color: var(--text-faint);
+    transition: transform 0.45s var(--ease-out), color 0.3s ease;
+    align-self: center;
+  }
+  .pattern:hover .arrow { transform: translate(4px, -4px); color: var(--accent); }
+  @media (max-width: 760px) {
+    .pattern { grid-template-columns: 48px 1fr; }
+    .pattern p { grid-column: 2; }
+    .pattern .arrow { display: none; }
+  }
+
+  /* ================= FRAMEWORKS ================= */
+  .fw-scroll {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 292px;
+    gap: 14px;
+    overflow-x: auto;
+    padding: 10px 4px 26px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.15) transparent;
+    margin: 0 -4px;
+  }
+  .fw {
+    scroll-snap-align: start;
+    padding: 10px;
+    border-radius: 24px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--line);
+    transition: transform 0.5s var(--ease-out), border-color 0.3s ease;
+  }
+  .fw:hover { transform: translateY(-4px); border-color: var(--line-strong); }
+  .fw-in {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border-radius: 16px;
+    border: 1px solid var(--line);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+    padding: 24px;
+  }
+  .fw h3 { font-size: 18px; margin-bottom: 4px; }
+  .fw .from {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 16px;
+  }
+  .fw p { font-size: 13px; color: var(--text-dim); flex-grow: 1; }
+  .fw-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 18px; }
+  .fw-tags span {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    color: var(--text-dim);
+  }
+
+  /* ================= ROADMAP ================= */
+  .roadmap { position: relative; margin-left: 6px; }
+  .roadmap::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 8px; bottom: 8px;
+    width: 1px;
+    background: linear-gradient(180deg, var(--accent), rgba(52,211,153,0.06));
+  }
+  .stage {
+    position: relative;
+    padding: 0 0 56px 44px;
+  }
+  .stage:last-child { padding-bottom: 0; }
+  .stage::before {
+    content: "";
+    position: absolute;
+    left: -5px; top: 7px;
+    width: 11px; height: 11px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--accent);
+    box-shadow: 0 0 0 5px var(--bg), 0 0 14px rgba(52,211,153,0.4);
+  }
+  .stage .when {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .stage h3 { font-size: clamp(21px, 2.6vw, 27px); margin: 10px 0 12px; }
+  .stage p { color: var(--text-dim); font-size: 14.5px; max-width: 58ch; }
+  .stage ul {
+    list-style: none;
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .stage li {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,0.03);
+    color: var(--text-dim);
+    transition: border-color 0.3s ease, color 0.3s ease;
+  }
+  .stage li:hover { border-color: rgba(52,211,153,0.4); color: var(--accent); }
+
+  /* ================= RESOURCES ================= */
+  .res-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 14px;
+  }
+  .res {
+    padding: 10px;
+    border-radius: 22px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--line);
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.5s var(--ease-out), border-color 0.3s ease;
+    display: block;
+  }
+  .res:hover { transform: translateY(-4px); border-color: var(--line-strong); }
+  .res-in {
+    height: 100%;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+    padding: 24px 22px;
+  }
+  .res .kind {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+  .res h3 { font-size: 17px; margin: 10px 0 8px; transition: color 0.3s ease; }
+  .res:hover h3 { color: var(--accent); }
+  .res p { font-size: 13px; color: var(--text-dim); }
+
+  /* ================= FOOTER CTA ================= */
+  .outro { text-align: left; }
+  .outro-box {
+    padding: clamp(40px, 6vw, 80px) clamp(28px, 5vw, 64px);
+    border-radius: 32px;
+    border: 1px solid var(--line);
+    background:
+      radial-gradient(ellipse 90% 130% at 15% 0%, rgba(52,211,153,0.1), transparent 55%),
+      rgba(255,255,255,0.025);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+  .outro h2 { font-size: clamp(30px, 4.5vw, 54px); max-width: 16ch; margin: 18px 0 20px; }
+  .outro p { color: var(--text-dim); max-width: 52ch; margin-bottom: 36px; }
+
+  footer.site-end {
+    border-top: 1px solid var(--line);
+    padding: 36px 0 48px;
+    margin-top: 40px;
+  }
+  footer.site-end .wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-faint);
+    letter-spacing: 0.06em;
+  }
+
+  code.inline {
+    font-family: var(--font-mono);
+    font-size: 0.86em;
+    padding: 2px 7px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--line);
+    color: #a7f3d0;
+  }
+</style>
+</head>
+<body>
+
+<div class="ambient" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<nav id="nav" aria-label="Main navigation">
+  <span class="brand"><span class="brand-dot"></span>AGENTIC//FIELDGUIDE</span>
+  <a class="navlink" href="#loop">The Loop</a>
+  <a class="navlink" href="#blocks">Building Blocks</a>
+  <a class="navlink" href="#patterns">Patterns</a>
+  <a class="navlink" href="#frameworks">Frameworks</a>
+  <a class="navlink" href="#roadmap">Roadmap</a>
+  <a class="navlink" href="#resources">Resources</a>
+</nav>
+
+<main>
+
+  <!-- ============ HERO ============ -->
+  <header class="hero">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <p class="kicker reveal in">A field guide · zero to autonomous systems</p>
+          <h1 class="reveal in d1">
+            Learn <em>Agentic AI<svg viewBox="0 0 220 12" preserveAspectRatio="none" aria-hidden="true"><path d="M2 9 Q 60 2 110 7 T 218 5" fill="none" stroke="#34d399" stroke-width="2.5" stroke-linecap="round"/></svg></em>,
+            <br/>one concept at a time.
+          </h1>
+          <p class="sub lede reveal in d2">
+            Move beyond chatbots. Understand how AI systems that plan, use tools,
+            remember, and act on their own actually work — and build your first one today.
+          </p>
+          <div class="cta-row reveal in d3">
+            <a class="btn-primary" href="#loop">
+              Start the guide
+              <span class="orb" aria-hidden="true">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+              </span>
+            </a>
+            <a class="btn-ghost" href="#roadmap">View the roadmap</a>
+          </div>
+        </div>
+
+        <div class="reveal in d3">
+          <div class="terminal-shell">
+            <div class="terminal" role="img" aria-label="Example of an AI agent reasoning loop in a terminal">
+              <div class="term-bar">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+                <span class="ttl">agent.run — watch it think</span>
+              </div>
+              <div class="term-body">
+                <div class="ln"><span class="t-prompt">&gt;</span> <span class="t-key">goal</span> = <span class="t-str">"Book the cheapest flight to Tokyo"</span></div>
+                <div class="ln t-dim">  ├─ thought: search flights across 3 sites</div>
+                <div class="ln t-dim">  ├─ action: call flight_search(<span class="t-str">"TYO"</span>) → 42 results</div>
+                <div class="ln t-dim">  ├─ reflect: filter by price &lt; $700 → 4 remain</div>
+                <div class="ln"><span class="t-prompt">&gt;</span> action: book_flight(<span class="t-str">#A209</span>) ✓ done<span class="cursor-blink" aria-hidden="true"></span></div>
+              </div>
+            </div>
+            <div class="hero-meta">
+              <span>PERCEIVE → PLAN → ACT → REFLECT</span>
+              <span>autonomy: on</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ THE LOOP ============ -->
+  <section id="loop">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <h2>The agent loop is all there is</h2>
+        <p class="lede">
+          Every agent — from a coding assistant to an autonomous researcher — runs the same core cycle.
+          Master these five moves and everything else is composition.
+        </p>
+      </div>
+      <div class="loop-grid">
+        <article class="loop-step reveal d1">
+          <div class="loop-inner">
+            <span class="num"></span>
+            <h3>Perceive</h3>
+            <p>The agent takes in its context: user intent, environment state, prior results, and available signals.</p>
+          </div>
+        </article>
+        <article class="loop-step reveal d2">
+          <div class="loop-inner">
+            <span class="num"></span>
+            <h3>Reason</h3>
+            <p>An LLM weighs the goal against what it knows, decomposing the problem into tractable sub-problems.</p>
+          </div>
+        </article>
+        <article class="loop-step reveal d3">
+          <div class="loop-inner">
+            <span class="num"></span>
+            <h3>Plan</h3>
+            <p>It selects a strategy — which tools to call, in what order, with what arguments, and when to stop.</p>
+          </div>
+        </article>
+        <article class="loop-step reveal d4">
+          <div class="loop-inner">
+            <span class="num"></span>
+            <h3>Act</h3>
+            <p>Actions execute in the real world: API calls, code runs, file edits, database queries, messages sent.</p>
+          </div>
+        </article>
+        <article class="loop-step reveal d5">
+          <div class="loop-inner">
+            <span class="num"></span>
+            <h3>Reflect</h3>
+            <p>It evaluates outcomes against the goal, stores lessons in memory, and loops again until satisfied.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BUILDING BLOCKS ============ -->
+  <section id="blocks">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <h2>Five parts bolt an LLM onto reality</h2>
+        <p class="lede">
+          A raw language model only predicts text. These components turn prediction into agency.
+        </p>
+      </div>
+
+      <div class="bento">
+        <div class="cell c-wide tinted reveal">
+          <div class="cell-in">
+            <h3>
+              <span class="glyph" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 2v2M15 2v2M9 20v2M15 20v2M2 9h2M2 15h2M20 9h2M20 15h2"/><circle cx="12" cy="12" r="3"/></svg></span>
+              The model — the reasoning core
+            </h3>
+            <p>GPT-class, Claude-class, or open models like Llama and Qwen. The model is the brain: everything else exists to feed it context and carry out its decisions.</p>
+            <div class="mini-diagram">
+              <div class="mini-row">
+                <span class="chip on">reasoning</span><span class="chip">function calling</span><span class="chip">structured output</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cell c-third reveal d1">
+          <div class="cell-in">
+            <h3>
+              <span class="glyph" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M21 3v6h-6"/></svg></span>
+              Tools
+            </h3>
+            <p>Typed functions the model may call — web search, code execution, APIs, file systems. Tools are how thought becomes action.</p>
+          </div>
+        </div>
+
+        <div class="cell c-third reveal d2">
+          <div class="cell-in">
+            <h3>
+              <span class="glyph" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="9"/></svg></span>
+              Memory
+            </h3>
+            <p>Short-term context windows plus long-term vector stores. Memory lets an agent learn across steps and sessions instead of starting cold.</p>
+          </div>
+        </div>
+
+        <div class="cell c-third reveal d3">
+          <div class="cell-in">
+            <h3>
+              <span class="glyph" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="4" cy="5" r="2"/><circle cx="20" cy="5" r="2"/><circle cx="4" cy="19" r="2"/><circle cx="20" cy="19" r="2"/><path d="M5.7 6.3l4.3 3.9M18.3 6.3L14 10.2M5.7 17.7l4.3-3.9M18.3 17.7L14 13.8"/></svg></span>
+              Orchestration
+            </h3>
+            <p>The runtime loop that sequences perception, tool calls, and retries. Frameworks live here — the graph that routes state between steps.</p>
+          </div>
+        </div>
+
+        <div class="cell c-wide reveal d2">
+          <div class="cell-in">
+            <h3>
+              <span class="glyph" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5-2 8-5.5 8-11V5l-8-3-8 3v6c0 5.5 3 9 8 11z"/><path d="M9 11.5l2 2 4-4"/></svg></span>
+              Guardrails &amp; evaluation
+            </h3>
+            <p>Permission scopes, spend limits, sandboxing, and eval suites. Autonomy without constraints is just an expensive way to break things.</p>
+            <div class="mini-diagram">
+              <div class="mini-row">
+                <span class="chip">sandboxed execution</span>
+                <span class="chip on">human approval gates</span>
+                <span class="chip">token budgets</span>
+                <span class="chip">trace logging</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PATTERNS ============ -->
+  <section id="patterns">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <h2>Design patterns you'll meet in the wild</h2>
+        <p class="lede">
+          From Anthropic's <em>Building Effective Agents</em> to the latest research, most architectures reduce to five recurring shapes.
+        </p>
+      </div>
+      <div class="pattern-list reveal">
+        <div class="pattern">
+          <span class="idx">P·01</span>
+          <h3>Prompt chaining</h3>
+          <p>Break a task into fixed steps; each output feeds the next. Simple, predictable, easy to debug.</p>
+          <svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        </div>
+        <div class="pattern">
+          <span class="idx">P·02</span>
+          <h3>ReAct — reason + act interleaved</h3>
+          <p>The canonical loop: think, call a tool, observe the result, think again. The default shape of most agents.</p>
+          <svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        </div>
+        <div class="pattern">
+          <span class="idx">P·03</span>
+          <h3>Planner–executor</h3>
+          <p>A planner decomposes the goal into a task graph; cheap executors handle each node in parallel.</p>
+          <svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        </div>
+        <div class="pattern">
+          <span class="idx">P·04</span>
+          <h3>Reflection &amp; self-critique</h3>
+          <p>A critic pass reviews drafts or traces and demands revisions — measurable quality gains for a latency cost.</p>
+          <svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        </div>
+        <div class="pattern">
+          <span class="idx">P·05</span>
+          <h3>Multi-agent teams</h3>
+          <p>Specialized agents negotiate over shared state — researcher, coder, reviewer. Powerful, but coordination overhead is real.</p>
+          <svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FRAMEWORKS ============ -->
+  <section id="frameworks">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <h2>Pick a framework, then outgrow it</h2>
+        <p class="lede">
+          Start with one to learn the vocabulary. Every serious team eventually writes part of its own orchestration layer.
+          Drag or swipe the shelf.
+        </p>
+      </div>
+      <div class="fw-scroll reveal" tabindex="0" aria-label="Framework cards, horizontally scrollable">
+        <article class="fw">
+          <div class="fw-in">
+            <h3>LangGraph</h3>
+            <div class="from">LangChain</div>
+            <p>Stateful agent graphs with checkpoints, human-in-the-loop interrupts, and durable execution. The industry workhorse.</p>
+            <div class="fw-tags"><span>graph runtime</span><span>python / js</span></div>
+          </div>
+        </article>
+        <article class="fw">
+          <div class="fw-in">
+            <h3>OpenAI Agents SDK</h3>
+            <div class="from">OpenAI</div>
+            <p>Lightweight primitives: agents, handoffs, guardrails, tracing. Minimal surface area, deep integration with OpenAI models.</p>
+            <div class="fw-tags"><span>handoffs</span><span>tracing built-in</span></div>
+          </div>
+        </article>
+        <article class="fw">
+          <div class="fw-in">
+            <h3>CrewAI</h3>
+            <div class="from">CrewAI Inc.</div>
+            <p>Role-based multi-agent crews with tasks and process control. The gentlest on-ramp to agent teamwork metaphors.</p>
+            <div class="fw-tags"><span>multi-agent</span><span>beginner friendly</span></div>
+          </div>
+        </article>
+        <article class="fw">
+          <div class="fw-in">
+            <h3>AutoGen</h3>
+            <div class="from">Microsoft</div>
+            <p>Conversable agents that talk to each other — and to humans. Strong research pedigree and event-driven runtime.</p>
+            <div class="fw-tags"><span>research-grade</span><span>.NET / python</span></div>
+          </div>
+        </article>
+        <article class="fw">
+          <div class="fw-in">
+            <h3>Semantic Kernel</h3>
+            <div class="from">Microsoft</div>
+            <p>Enterprise SDK weaving LLMs into existing .NET, Python, and Java codebases with planners and plugins.</p>
+            <div class="fw-tags"><span>enterprise</span><span>c# / java</span></div>
+          </div>
+        </article>
+        <article class="fw">
+          <div class="fw-in">
+            <h3>Google ADK</h3>
+            <div class="from">Google</div>
+            <p>Agent Development Kit for Gemini-native agents with model-agnostic deployment on Vertex AI and Cloud Run.</p>
+            <div class="fw-tags"><span>gemini-first</span><span>gcp native</span></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ROADMAP ============ -->
+  <section id="roadmap">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <h2>Your path from curious to shipping</h2>
+        <p class="lede">Six stages, roughly one to two months each if you build alongside reading.</p>
+      </div>
+      <div class="roadmap">
+        <div class="stage reveal">
+          <span class="when">Stage 01 · Week 1–2</span>
+          <h3>Foundations</h3>
+          <p>Get fluent with the primitive everything rests on: prompting, tokens, temperature, context windows, and structured JSON output.</p>
+          <ul><li>prompt engineering</li><li>tokens &amp; context</li><li>JSON mode</li><li>API basics</li></ul>
+        </div>
+        <div class="stage reveal d1">
+          <span class="when">Stage 02 · Week 3–4</span>
+          <h3>Tool calling</h3>
+          <p>Teach a model to call functions. Build a tiny weather bot that answers by invoking real APIs — no framework yet, raw HTTP.</p>
+          <ul><li>function calling</li><li>schema design</li><li>error handling</li></ul>
+        </div>
+        <div class="stage reveal d2">
+          <span class="when">Stage 03 · Month 2</span>
+          <h3>First real agent</h3>
+          <p>Write the ReAct loop yourself in ~100 lines: goal in, tool calls out, results fed back, stop condition enforced.</p>
+          <ul><li>ReAct pattern</li><li>stop conditions</li><li>retry logic</li><li>tracing</li></ul>
+        </div>
+        <div class="stage reveal d3">
+          <span class="when">Stage 04 · Month 2–3</span>
+          <h3>Memory &amp; retrieval</h3>
+          <p>Add persistence: embeddings, vector databases, RAG. Your agent now recalls yesterday's work and cites its sources.</p>
+          <ul><li>embeddings</li><li>vector search</li><li>RAG pipelines</li><li>chunking strategy</li></ul>
+        </div>
+        <div class="stage reveal d4">
+          <span class="when">Stage 05 · Month 3–4</span>
+          <h3>Advanced patterns</h3>
+          <p>Planner–executor graphs, reflection passes, and multi-agent handoffs. Learn when complexity pays for itself — and when it doesn't.</p>
+          <ul><li>agent graphs</li><li>reflection</li><li>multi-agent</li><li>evals</li></ul>
+        </div>
+        <div class="stage reveal d5">
+          <span class="when">Stage 06 · Ongoing</span>
+          <h3>Production craft</h3>
+          <p>Sandboxing, permission scopes, cost budgets, observability, and continuous evaluation. This is where agents earn trust.</p>
+          <ul><li>guardrails</li><li>observability</li><li>cost control</li><li>safety review</li></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RESOURCES ============ -->
+  <section id="resources">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <h2>Read these before writing more code</h2>
+      </div>
+      <div class="res-grid reveal">
+        <a class="res" href="https://www.anthropic.com/research/building-effective-agents" target="_blank" rel="noopener">
+          <div class="res-in">
+            <span class="kind">Essay · Anthropic</span>
+            <h3>Building Effective Agents</h3>
+            <p>The clearest articulation of workflows vs. agents — and why simpler usually wins.</p>
+          </div>
+        </a>
+        <a class="res" href="https://arxiv.org/abs/2210.03629" target="_blank" rel="noopener">
+          <div class="res-in">
+            <span class="kind">Paper · arXiv</span>
+            <h3>ReAct: Synergizing Reasoning and Acting</h3>
+            <p>The 2022 paper behind the loop every framework implements.</p>
+          </div>
+        </a>
+        <a class="res" href="https://arxiv.org/abs/2308.11432" target="_blank" rel="noopener">
+          <div class="res-in">
+            <span class="kind">Survey · arXiv</span>
+            <h3>A Survey on LLM-based Autonomous Agents</h3>
+            <p>Systematic taxonomy of agent architectures, memory, and planning methods.</p>
+          </div>
+        </a>
+        <a class="res" href="https://langchain-ai.github.io/langgraph/" target="_blank" rel="noopener">
+          <div class="res-in">
+            <span class="kind">Docs · LangChain</span>
+            <h3>LangGraph Documentation</h3>
+            <p>Tutorials and how-to guides for building stateful, production-grade agent graphs.</p>
+          </div>
+        </a>
+        <a class="res" href="https://www.deeplearning.ai/courses/" target="_blank" rel="noopener">
+          <div class="res-in">
+            <span class="kind">Courses · DeepLearning.AI</span>
+            <h3>Agentic AI Short Courses</h3>
+            <p>Bite-sized hands-on courses taught by Andrew Ng and framework authors.</p>
+          </div>
+        </a>
+        <a class="res" href="https://github.com/e2b-dev/awesome-ai-agents" target="_blank" rel="noopener">
+          <div class="res-in">
+            <span class="kind">Repository · GitHub</span>
+            <h3>Awesome AI Agents</h3>
+            <p>A curated catalog of open-source agents, frameworks, and tools to study and fork.</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ OUTRO ============ -->
+  <section class="outro">
+    <div class="wrap">
+      <div class="outro-box reveal">
+        <p class="kicker">One last thing</p>
+        <h2>Agents are learned by building, not by watching.</h2>
+        <p>
+          Pick one repetitive workflow in your own life. Wrap it in a goal, three tools, and a stop condition.
+          That weekend project will teach you more than ten tutorials.
+        </p>
+        <a class="btn-primary" href="#loop">
+          Back to the loop
+          <span class="orb" aria-hidden="true">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+          </span>
+        </a>
+      </div>
+    </div>
+
+    <footer class="site-end">
+      <div class="wrap">
+        <span>AGENTIC//FIELDGUIDE — a learning companion</span>
+        <span>built for curious engineers · 2026</span>
+      </div>
+    </footer>
+  </section>
+
+</main>
+
+<script>
+  // ---- Scroll reveal (IntersectionObserver, no scroll listeners) ----
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add("in");
+          io.unobserve(e.target);
+        }
+      });
+    },
+    { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+  );
+  document.querySelectorAll(".reveal:not(.in)").forEach((el) => io.observe(el));
+
+  // ---- Nav hide-on-scroll-down, show-on-scroll-up ----
+  const nav = document.getElementById("nav");
+  let lastY = 0;
+  let ticking = false;
+
+  function updateNav(y) {
+    const delta = y - lastY;
+    if (y > 140 && delta > 6) nav.classList.add("hidden-up");
+    else if (delta < -6 || y <= 140) nav.classList.remove("hidden-up");
+    lastY = y;
+    ticking = false;
+  }
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => updateNav(window.scrollY));
+        ticking = true;
+      }
+    },
+    { passive: true }
+  );
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    nav.classList.remove("hidden-up");
+  }
+</script>
+
+</body>
+</html>
